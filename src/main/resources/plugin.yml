@@ -1,7 +1,0 @@
-name: SpyNetherPortals
-version: 1.0.1
-main: com.spygamingog.spynetherportals.SpyNetherPortals
-api-version: '1.21'
-author: SpyGamingOG
-depend: [SpyCore]
-description: Connects worlds via nether and end portals based on naming conventions.
