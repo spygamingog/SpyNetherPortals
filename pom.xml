@@ -6,7 +6,7 @@
 
     <groupId>com.spygamingog</groupId>
     <artifactId>spynetherportals</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>jar</packaging>
 
     <name>SpyNetherPortals</name>
@@ -35,6 +35,10 @@
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>local-repo</id>
+            <url>file://${user.home}/.m2/repository</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -45,15 +49,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.34</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.spygamingog</groupId>
             <artifactId>spycore</artifactId>
-            <version>1.0.7</version>
+            <version>1.1.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
