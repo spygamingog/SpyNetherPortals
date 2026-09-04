@@ -94,9 +94,8 @@ public class SpyNetherPortals extends JavaPlugin implements Listener {
                 getLogger().info("[Portal] Looking for nether for " + fromName + "... Found: " + (targetWorld != null ? targetWorld.getName() : "null"));
             } else if (fromWorld.getEnvironment() == World.Environment.NETHER) {
                 // Nether -> Overworld
-                String baseName = fromName.endsWith("_nether") ? fromName.substring(0, fromName.length() - 7) : fromName;
-                targetWorld = SpyAPI.getWorld(baseName);
-                getLogger().info("[Portal] Looking for overworld for " + fromName + " (base: " + baseName + ")... Found: " + (targetWorld != null ? targetWorld.getName() : "null"));
+                targetWorld = findOverworld(fromWorld, "_nether");
+                getLogger().info("[Portal] Looking for overworld for " + fromName + "... Found: " + (targetWorld != null ? targetWorld.getName() : "null"));
             }
         } 
         // Handle End Portals
@@ -107,23 +106,29 @@ public class SpyNetherPortals extends JavaPlugin implements Listener {
                 getLogger().info("[Portal] Looking for end for " + fromName + "... Found: " + (targetWorld != null ? targetWorld.getName() : "null"));
             } else if (fromWorld.getEnvironment() == World.Environment.THE_END) {
                 // End -> Overworld
-                String baseName = fromName.endsWith("_the_end") ? fromName.substring(0, fromName.length() - 8) : fromName;
-                targetWorld = SpyAPI.getWorld(baseName);
-                getLogger().info("[Portal] Looking for overworld for " + fromName + " (base: " + baseName + ")... Found: " + (targetWorld != null ? targetWorld.getName() : "null"));
+                targetWorld = findOverworld(fromWorld, "_the_end");
+                getLogger().info("[Portal] Looking for overworld for " + fromName + "... Found: " + (targetWorld != null ? targetWorld.getName() : "null"));
             }
         }
 
         if (targetWorld != null) {
             Location to = event.getTo();
-            to.setWorld(targetWorld);
+            if (to == null) {
+                to = new Location(targetWorld, from.getX(), from.getY(), from.getZ(), from.getYaw(), from.getPitch());
+            } else {
+                to.setWorld(targetWorld);
+            }
             
             // Handle Nether Portal coordinate scaling
             if (event.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
                 double scale = (fromWorld.getEnvironment() == World.Environment.NORMAL) ? 0.125 : 8.0;
                 to.setX(from.getX() * scale);
                 to.setZ(from.getZ() * scale);
-                // Keep Y the same, but ensure it's within bounds
-                to.setY(Math.max(0, Math.min(targetWorld.getMaxHeight() - 1, from.getY())));
+                // Keep Y within world height bounds
+                to.setY(Math.max(targetWorld.getMinHeight() + 1, Math.min(targetWorld.getMaxHeight() - 1, from.getY())));
+                event.setCanCreatePortal(true);
+                event.setSearchRadius(128);
+                event.setCreationRadius(16);
             } 
             // Handle End Portal destinations
             else if (event.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL) {
@@ -141,10 +146,7 @@ public class SpyNetherPortals extends JavaPlugin implements Listener {
                 }
             }
             
-            // NOTE: We no longer force a "safe location" here. 
-            // By setting the destination world and coordinates, we allow Bukkit's 
-            // internal portal logic to search for an existing portal or create a new one,
-            // which preserves the portal linking the user requested.
+            event.setTo(to);
             
             getLogger().info("Redirecting " + event.getPlayer().getName() + " to " + targetWorld.getName() + 
                 " at [" + to.getBlockX() + ", " + to.getBlockY() + ", " + to.getBlockZ() + "]");
@@ -157,18 +159,52 @@ public class SpyNetherPortals extends JavaPlugin implements Listener {
     }
 
     private World findLinkedWorld(String baseName, String suffix) {
-        // Try direct name + suffix
-        // We use true here because if a player is entering a portal, 
-        // we WANT the destination world to load if it's hibernating.
+        // 1. Try direct name + suffix (e.g. survival_nether)
         World target = SpyAPI.getWorld(baseName + suffix, true);
         if (target != null) return target;
 
-        // If it's a container world, try to find the linked world in the same container
-        String container = SpyAPI.getWorldManager().getContainerForWorld(Bukkit.getWorld(baseName));
-        if (!container.equals("root")) {
-            // It's a container world, the full name is spycore-worlds/CON/NAME
-            // We already tried the full path via SpyAPI.getWorld, so if it's not loaded, we can't do much
-            // unless we want to proactively load it. For now, we only link LOADED worlds.
+        // 2. Try with clean alias
+        World fromWorld = Bukkit.getWorld(baseName);
+        if (fromWorld != null) {
+            String alias = SpyAPI.getAliasForWorld(fromWorld);
+            if (alias != null && !alias.equalsIgnoreCase(baseName)) {
+                target = SpyAPI.getWorld(alias + suffix, true);
+                if (target != null) return target;
+            }
+
+            // 3. Try containerized path
+            String container = SpyAPI.getContainerForWorld(fromWorld);
+            if (container != null && !container.equalsIgnoreCase("root")) {
+                target = SpyAPI.getWorld(container + "/" + (alias != null ? alias : baseName) + suffix, true);
+                if (target != null) return target;
+            }
+        }
+
+        return null;
+    }
+
+    private World findOverworld(World fromWorld, String suffix) {
+        String fromName = fromWorld.getName();
+        String baseName = fromName.toLowerCase().endsWith(suffix.toLowerCase())
+                ? fromName.substring(0, fromName.length() - suffix.length())
+                : fromName;
+
+        World target = SpyAPI.getWorld(baseName, true);
+        if (target != null) return target;
+
+        String alias = SpyAPI.getAliasForWorld(fromWorld);
+        if (alias != null) {
+            String baseAlias = alias.toLowerCase().endsWith(suffix.toLowerCase())
+                    ? alias.substring(0, alias.length() - suffix.length())
+                    : alias;
+            target = SpyAPI.getWorld(baseAlias, true);
+            if (target != null) return target;
+
+            String container = SpyAPI.getContainerForWorld(fromWorld);
+            if (container != null && !container.equalsIgnoreCase("root")) {
+                target = SpyAPI.getWorld(container + "/" + baseAlias, true);
+                if (target != null) return target;
+            }
         }
 
         return null;

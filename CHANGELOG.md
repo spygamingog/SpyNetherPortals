@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.6] - 2026-09-05
+
+### Fixed
+- **Overworld to Nether Portal Failure**: Fixed critical `NullPointerException` where `PlayerPortalEvent#getTo()` returned `null` in custom worlds, causing portal entry to fail.
+- **Portal Generation**: Explicitly enabled portal creation flags (`setCanCreatePortal(true)`, `setSearchRadius(128)`, `setCreationRadius(16)`) and safely set the destination location.
+- **Container Dimension Routing**: Enhanced dimension resolver to correctly detect linked Nether and End worlds for containerized worlds via both alias and container path.
+
+### Changed
+- **Core Dependency**: Updated to **SpyCore 1.1.1**.
+
 ## [1.0.5] - 2026-09-04
 
 ### Changed

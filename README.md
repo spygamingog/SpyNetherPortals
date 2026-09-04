@@ -3,7 +3,7 @@
 [![Platform](https://img.shields.io/badge/Platform-Paper%20%2F%20Purpur-blue)](https://papermc.io)
 [![Minecraft](https://img.shields.io/badge/Minecraft-1.21%2B-green)](https://papermc.io)
 [![Java](https://img.shields.io/badge/Java-21%2B-orange)](https://www.oracle.com/java/)
-[![Core](https://img.shields.io/badge/Requires-SpyCore%201.1.0-purple)](https://github.com/spygamingog/SpyCore)
+[![Core](https://img.shields.io/badge/Requires-SpyCore%201.1.1-purple)](https://github.com/spygamingog/SpyCore)
 [![License](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey)](LICENSE)
 
 SpyNetherPortals is a dimension-linking and portal routing plugin for Paper and Purpur (1.21+). Designed as an extension for [SpyCore](https://github.com/spygamingog/SpyCore), it links Nether and End portals between custom worlds and containerized worlds, handles coordinate translation, and enables cross-dimension communication.
@@ -25,9 +25,9 @@ SpyNetherPortals is a dimension-linking and portal routing plugin for Paper and 
 1. **Requirements**:
    - Paper or Purpur 1.21+
    - Java 21+
-   - [SpyCore](https://github.com/spygamingog/SpyCore) 1.1.0 or newer
+   - [SpyCore](https://github.com/spygamingog/SpyCore) 1.1.1 or newer
 2. **Installation**:
-   - Put both `spycore-1.1.0.jar` and `spynetherportals-1.0.5.jar` into your server's `plugins/` directory.
+   - Put both `spycore-1.1.1.jar` and `spynetherportals-1.0.6.jar` into your server's `plugins/` directory.
    - Restart the server.
 
 ---
