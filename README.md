@@ -4,7 +4,7 @@
 [![Minecraft](https://img.shields.io/badge/Minecraft-1.21%2B-green)](https://papermc.io)
 [![Java](https://img.shields.io/badge/Java-21%2B-orange)](https://www.oracle.com/java/)
 [![Core](https://img.shields.io/badge/Requires-SpyCore%201.1.0-purple)](https://github.com/spygamingog/SpyCore)
-[![License](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
+[![License](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey)](LICENSE)
 
 SpyNetherPortals is a dimension-linking and portal routing plugin for Paper and Purpur (1.21+). Designed as an extension for [SpyCore](https://github.com/spygamingog/SpyCore), it links Nether and End portals between custom worlds and containerized worlds, handles coordinate translation, and enables cross-dimension communication.
 
@@ -52,4 +52,4 @@ If a player steps into a Nether portal in `world2`, the plugin checks for `world
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)](LICENSE).
